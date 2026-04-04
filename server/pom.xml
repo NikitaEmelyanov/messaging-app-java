@@ -14,6 +14,10 @@
   <artifactId>server</artifactId>
   <packaging>jar</packaging>
 
+  <properties>
+    <springdoc.version>2.2.0</springdoc.version>
+  </properties>
+
   <dependencies>
     <!-- Внутренний модуль -->
     <dependency>
@@ -22,13 +26,7 @@
       <version>1.0.0</version>
     </dependency>
 
-    <!-- Spring Boot Starter -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
-    </dependency>
-
-    <!-- Spring Boot WebSocket -->
+    <!-- Spring Boot Starter WebSocket -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-websocket</artifactId>
@@ -40,17 +38,18 @@
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
 
+    <!-- SpringDoc OpenAPI для Swagger -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>${springdoc.version}</version>
+    </dependency>
+
     <!-- Lombok -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <optional>true</optional>
-    </dependency>
-
-    <!-- Логирование -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-logging</artifactId>
     </dependency>
 
     <!-- Тестирование -->
@@ -66,17 +65,9 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring-boot.version}</version>
         <configuration>
           <mainClass>com.telegram.clone.server.ServerApplication</mainClass>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

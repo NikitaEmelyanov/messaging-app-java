@@ -61,10 +61,28 @@ public enum MessageType {
     }
 
     /**
+     * Проверить, является ли тип текстовым сообщением.
+     *
+     * @return true если тип TEXT
+     */
+    public boolean isText() {
+        return this == TEXT;
+    }
+
+    /**
+     * Проверить, является ли тип системным сообщением.
+     *
+     * @return true если тип SYSTEM или ERROR
+     */
+    public boolean isSystem() {
+        return this == SYSTEM || this == ERROR;
+    }
+
+    /**
      * Получить тип сообщения по коду
      *
      * @param code строковый код типа
-     * @return соответствующий MessageType или null
+     * @return соответствующий MessageType или TEXT по умолчанию
      */
     public static MessageType fromCode(String code) {
         for (MessageType type : values()) {
@@ -72,7 +90,7 @@ public enum MessageType {
                 return type;
             }
         }
-        return null;
+        return TEXT;
     }
 
     @Override
