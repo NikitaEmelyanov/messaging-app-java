@@ -16,8 +16,8 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
         </processorPath>
         <module name="common" />
-        <module name="client" />
         <module name="server" />
+        <module name="client" />
       </profile>
     </annotationProcessing>
   </component>
