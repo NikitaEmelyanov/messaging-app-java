@@ -3,7 +3,7 @@ package com.telegram.clone.server.handler;
 import com.telegram.clone.common.dto.MessageDto;
 import com.telegram.clone.common.enums.MessageType;
 import com.telegram.clone.common.exception.ChatException;
-import com.telegram.clone.server.service.impl.UserSessionServiceImpl;
+import com.telegram.clone.server.service.UserSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AuthMessageHandler implements MessageHandler {
 
-    private final UserSessionServiceImpl sessionService;
+    private final UserSessionService sessionService;
     private MessageHandler nextHandler;
 
     /**

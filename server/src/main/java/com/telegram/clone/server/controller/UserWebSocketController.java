@@ -1,7 +1,7 @@
 package com.telegram.clone.server.controller;
 
 import com.telegram.clone.common.dto.UserStatusDto;
-import com.telegram.clone.server.service.impl.UserSessionServiceImpl;
+import com.telegram.clone.server.service.UserSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.Set;
 @Tag(name = "User Management", description = "API для управления пользователями")
 public class UserWebSocketController {
 
-    private final UserSessionServiceImpl sessionService;
+    private final UserSessionService sessionService;
 
     /**
      * Получить список всех онлайн пользователей.

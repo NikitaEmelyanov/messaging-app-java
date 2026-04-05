@@ -1,6 +1,6 @@
 package com.telegram.clone.server.interceptor;
 
-import com.telegram.clone.server.service.impl.AuthServiceImpl;
+import com.telegram.clone.server.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthHandshakeInterceptor implements HandshakeInterceptor {
 
-    private final AuthServiceImpl authService;
+    private final AuthService authService;
 
     private static final String TOKEN_PARAM = "token";
     private static final String USERNAME_ATTR = "username";

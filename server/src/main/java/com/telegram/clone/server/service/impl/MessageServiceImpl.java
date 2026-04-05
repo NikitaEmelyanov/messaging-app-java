@@ -16,9 +16,6 @@ import java.util.Set;
 /**
  * Реализация сервиса обработки сообщений.
  * Использует MessageBroker для рассылки сообщений.
- *
- * @author Telegram Clone Team
- * @version 1.0
  */
 @Slf4j
 @Service

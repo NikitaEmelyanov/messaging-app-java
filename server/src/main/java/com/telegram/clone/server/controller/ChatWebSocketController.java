@@ -19,9 +19,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 /**
  * WebSocket контроллер для обработки чат сообщений.
  * Использует MessageBroker для управления сессиями и рассылки сообщений.
- *
- * @author Telegram Clone Team
- * @version 1.0
  */
 @Slf4j
 @Controller
