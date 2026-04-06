@@ -45,7 +45,8 @@ public class MainViewModel implements IMainViewModel, NetworkListener, IMessageS
         this.onlineUsers = ConcurrentHashMap.newKeySet();
         this.connected = false;
 
-        this.messageService.addMessageListener(this);
+//        this.messageService.addMessageListener(this);
+        startPeriodicUserRefresh();
     }
 
     /** {@inheritDoc} */
@@ -251,5 +252,20 @@ public class MainViewModel implements IMainViewModel, NetworkListener, IMessageS
         if (currentChat != null && currentChat.equals(chatPartner)) {
             propertyChangeSupport.firePropertyChange("newMessage", null, message);
         }
+    }
+
+    private void startPeriodicUserRefresh() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(3000); // Обновляем каждые 3 секунды
+                    if (connected) {
+                        fetchOnlineUsersViaRest();
+                    }
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }).start();
     }
 }

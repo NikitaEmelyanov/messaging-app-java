@@ -4,6 +4,10 @@ import com.telegram.clone.client.model.ChatMessage;
 import com.telegram.clone.client.repository.IMessageRepository;
 import com.telegram.clone.client.repository.impl.InMemoryMessageRepository;
 import com.telegram.clone.client.service.IMessageService;
+import com.telegram.clone.common.dto.MessageDto;
+import com.telegram.clone.common.exception.ChatException;
+import jakarta.websocket.RemoteEndpoint.Async;
+import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -18,7 +22,6 @@ public class MessageService implements IMessageService {
 
     private final IMessageRepository messageRepository;
     private final List<MessageListener> listeners;
-    private final List<String> typingUsers;
 
     /**
      * Конструктор сервиса сообщений.
@@ -26,7 +29,6 @@ public class MessageService implements IMessageService {
     public MessageService() {
         this.messageRepository = new InMemoryMessageRepository();
         this.listeners = new CopyOnWriteArrayList<>();
-        this.typingUsers = new ArrayList<>();
     }
 
     /**
@@ -43,25 +45,46 @@ public class MessageService implements IMessageService {
         messageRepository.saveMessage(chatPartner, message);
 
         // Уведомляем слушателей
-        listeners.forEach(listener -> listener.onNewMessage(message));
+        for (MessageListener listener : listeners) {
+            listener.onNewMessage(message);
+        }
     }
 
-    /**
-     * Обработка статуса печатания.
-     *
-     * @param username имя пользователя
-     * @param isTyping печатает ли пользователь
-     */
     @Override
     public void onTypingStatus(String username, boolean isTyping) {
-        if (isTyping && !typingUsers.contains(username)) {
-            typingUsers.add(username);
-        } else if (!isTyping) {
-            typingUsers.remove(username);
-        }
 
-        listeners.forEach(listener -> listener.onTypingStatusChanged(username, isTyping));
     }
+
+//    /**
+//     * Обработка статуса печатания.
+//     *
+//     * @param username имя пользователя
+//     * @param isTyping печатает ли пользователь
+//     */
+//    @Override
+//    public void onTypingStatus(String username, boolean isTyping) {
+//        if (isTyping && !typingUsers.contains(username)) {
+//            typingUsers.add(username);
+//        } else if (!isTyping) {
+//            typingUsers.remove(username);
+//        }
+//
+//        listeners.forEach(listener -> listener.onTypingStatusChanged(username, isTyping));
+//    }
+//
+//    @Override
+//    @Async("messageExecutor")
+//    public void broadcastMessage(MessageDto message, String senderUsername) {
+//        log.debug("Broadcasting message from {} to all users", senderUsername);
+//
+//        try {
+//            // Передаем senderUsername для исключения отправителя
+//            webSocketController.broadcastToAll(message, senderUsername);
+//        } catch (IOException e) {
+//            log.error("Failed to broadcast message from {}", senderUsername, e);
+//            throw new ChatException.MessageSendException("Failed to broadcast message", e);
+//        }
+//    }
 
     /**
      * Обработка статуса пользователя.
@@ -106,13 +129,4 @@ public class MessageService implements IMessageService {
         listeners.remove(listener);
     }
 
-    /**
-     * Проверка, печатает ли пользователь.
-     *
-     * @param username имя пользователя
-     * @return true если печатает
-     */
-    public boolean isTyping(String username) {
-        return typingUsers.contains(username);
-    }
 }

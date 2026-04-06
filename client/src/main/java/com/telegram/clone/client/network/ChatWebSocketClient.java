@@ -155,6 +155,7 @@ public class ChatWebSocketClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         try {
+            log.info("Received message: {}", message);
             MessageDto dto = objectMapper.readValue(message, MessageDto.class);
 
             if (dto.type() == MessageType.SYSTEM) {
