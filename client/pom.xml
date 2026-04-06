@@ -22,6 +22,12 @@
       <version>1.0.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.16.0</version>
+    </dependency>
+
     <!-- FlatLaf для темной темы -->
     <dependency>
       <groupId>com.formdev</groupId>
@@ -61,6 +67,10 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>2.0.9</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-websocket</artifactId>
     </dependency>
   </dependencies>
 

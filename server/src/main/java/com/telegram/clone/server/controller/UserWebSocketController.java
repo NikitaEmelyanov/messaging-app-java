@@ -29,11 +29,11 @@ public class UserWebSocketController {
      * @return множество имен онлайн пользователей
      */
     @GetMapping("/online")
-    @Operation(summary = "Получить онлайн пользователей",
-        description = "Возвращает список всех пользователей, находящихся в сети")
+    @Operation(summary = "Получить онлайн пользователей")
     public Set<String> getOnlineUsers() {
-        log.debug("Getting online users list");
-        return sessionService.getOnlineUsers();
+        Set<String> onlineUsers = sessionService.getOnlineUsers();
+        log.info("Getting online users: {}", onlineUsers);
+        return onlineUsers;
     }
 
     /**

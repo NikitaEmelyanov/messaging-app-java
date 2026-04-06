@@ -1,6 +1,9 @@
 package com.telegram.clone.client.network;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.telegram.clone.client.model.ChatMessage;
 import com.telegram.clone.client.network.listener.NetworkListener;
 import com.telegram.clone.common.dto.MessageDto;
@@ -35,7 +38,12 @@ public class ChatWebSocketClient extends WebSocketClient {
         super(URI.create("ws://localhost:8080/ws/chat?token=" + token));
         this.token = token;
         this.listener = listener;
+
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
         this.connected = false;
     }
 
@@ -147,6 +155,7 @@ public class ChatWebSocketClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         try {
+            log.info("Received message: {}", message);
             MessageDto dto = objectMapper.readValue(message, MessageDto.class);
 
             if (dto.type() == MessageType.SYSTEM) {

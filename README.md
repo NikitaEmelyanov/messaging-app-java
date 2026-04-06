@@ -24,10 +24,6 @@
 
 ___
 
-##  Быстрый старт
-### Требования
-- Java 17 или выше
-- Maven 3.8+
 
 ### Установка и запуск
 ```bash
@@ -47,7 +43,7 @@ java -jar server/target/server-1.0.0.jar
 ```
 
 ```bash
-# 3.1 Проверка работы сервера
+# 3.1 Проверка работы сервера (Не обязательно)
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"alice","password":"pass123"}'
@@ -57,4 +53,18 @@ curl -X POST http://localhost:8080/api/auth/login \
 # 4. Запуск клиента (в отдельном терминале)
 java -jar client/target/client-1.0.0.jar
 ```
+
+### Тестовые пользователи
+
+
+|Username|Password|Display Name|
+|---|---|---|
+|alice|pass123|Alice Wonderland|
+|bob|qwerty|Bob Builder|
+|charlie|123456|Charlie Brown|
+|dmitry|letmein|Dmitry Ivanov|
+|elena|password|Elena Petrova|
+|michael|mike123|Michael Smith|
+|anna|anna2024|Anna Johnson|
+
 

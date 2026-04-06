@@ -39,7 +39,6 @@ public class ClientUser {
      *
      * @return отображаемое имя или логин
      */
-
     public String getDisplayName() {
         return displayName != null && !displayName.isEmpty() ? displayName : username;
     }
