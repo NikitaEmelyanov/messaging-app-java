@@ -45,7 +45,6 @@ public class MainViewModel implements IMainViewModel, NetworkListener, IMessageS
         this.onlineUsers = ConcurrentHashMap.newKeySet();
         this.connected = false;
 
-//        this.messageService.addMessageListener(this);
         startPeriodicUserRefresh();
     }
 
@@ -134,7 +133,7 @@ public class MainViewModel implements IMainViewModel, NetworkListener, IMessageS
         log.info("Connected to server via WebSocket");
         propertyChangeSupport.firePropertyChange("connected", false, true);
 
-        // ЗАГРУЖАЕМ ОНЛАЙН ПОЛЬЗОВАТЕЛЕЙ СРАЗУ ПОСЛЕ ПОДКЛЮЧЕНИЯ
+        // Загрузка онлайн пользователей сразу после подключения
         loadOnlineUsers();
 
         // Также запрашиваем статусы через REST API
