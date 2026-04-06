@@ -102,9 +102,16 @@ public class ContactListPanel extends JPanel {
      */
     private void setupBindings() {
         viewModel.addPropertyChangeListener(evt -> {
+            log.info("Property changed: {}", evt.getPropertyName());
             switch (evt.getPropertyName()) {
-                case "onlineUsers" -> updateContacts();
-                case "userStatus" -> updateUserStatus((String) evt.getNewValue());
+                case "onlineUsers" -> {
+                    log.info("Online users updated: {}", evt.getNewValue());
+                    updateContacts();
+                }
+                case "userStatus" -> {
+                    log.info("User status changed: {}", evt.getNewValue());
+                    updateContacts();
+                }
             }
         });
     }
@@ -122,15 +129,20 @@ public class ContactListPanel extends JPanel {
     private void updateContacts() {
         SwingUtilities.invokeLater(() -> {
             List<String> onlineUsers = viewModel.getOnlineUsers();
+            log.info("Updating contacts with online users: {}", onlineUsers);
+
             listModel.clear();
 
             for (String username : onlineUsers) {
                 if (!username.equals(viewModel.getCurrentUser().getUsername())) {
+                    log.info("Adding contact: {}", username);
                     listModel.addElement(new ContactItem(username, true));
                 }
             }
 
-            filterContacts();
+            if (listModel.isEmpty()) {
+                log.warn("No contacts found!");
+            }
         });
     }
 

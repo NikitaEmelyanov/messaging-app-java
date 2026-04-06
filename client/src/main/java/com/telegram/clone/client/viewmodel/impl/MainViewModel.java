@@ -130,17 +130,70 @@ public class MainViewModel implements IMainViewModel, NetworkListener, IMessageS
     @Override
     public void onConnected() {
         this.connected = true;
-        log.info("Connected to server");
+        log.info("Connected to server via WebSocket");
         propertyChangeSupport.firePropertyChange("connected", false, true);
+
+        // ЗАГРУЖАЕМ ОНЛАЙН ПОЛЬЗОВАТЕЛЕЙ СРАЗУ ПОСЛЕ ПОДКЛЮЧЕНИЯ
+        loadOnlineUsers();
+
+        // Также запрашиваем статусы через REST API
+        fetchOnlineUsersViaRest();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void onDisconnected() {
-        this.connected = false;
-        log.info("Disconnected from server");
-        propertyChangeSupport.firePropertyChange("connected", true, false);
-        propertyChangeSupport.firePropertyChange("error", null, "Connection lost");
+
+    }
+
+    private void fetchOnlineUsersViaRest() {
+        new Thread(() -> {
+            try {
+                java.net.URL url = new java.net.URL("http://localhost:8080/api/users/online");
+                java.net.HttpURLConnection conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+
+                int responseCode = conn.getResponseCode();
+                if (responseCode == 200) {
+                    java.io.BufferedReader br = new java.io.BufferedReader(
+                            new java.io.InputStreamReader(conn.getInputStream())
+                    );
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        response.append(line);
+                    }
+                    br.close();
+
+                    System.out.println("REST response: " + response.toString());
+
+                    com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    mapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+
+                    java.util.List<String> users = mapper.readValue(response.toString(),
+                            new com.fasterxml.jackson.core.type.TypeReference<java.util.List<String>>() {});
+
+                    System.out.println("Online users from REST: " + users);
+
+                    // Очищаем и обновляем список
+                    onlineUsers.clear();
+                    for (String username : users) {
+                        if (!username.equals(currentUser.getUsername())) {
+                            onlineUsers.add(username);
+                        }
+                    }
+
+                    // Принудительно обновляем UI
+                    propertyChangeSupport.firePropertyChange("onlineUsers", null, new java.util.ArrayList<>(onlineUsers));
+                }
+                conn.disconnect();
+            } catch (Exception e) {
+                System.err.println("Failed to fetch online users: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     /** {@inheritDoc} */
@@ -172,6 +225,7 @@ public class MainViewModel implements IMainViewModel, NetworkListener, IMessageS
     /** {@inheritDoc} */
     @Override
     public void onUserStatusChanged(String username, boolean online) {
+        log.info("User status changed: {} -> {}", username, online ? "online" : "offline");
         if (online) {
             onlineUsers.add(username);
         } else {

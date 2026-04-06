@@ -58,31 +58,42 @@ public class ChatService implements IChatService {
      */
     @Override
     public ChatMessage sendMessage(String recipient, String content) {
+        log.info("Sending message to: {}, content: {}", recipient, content);
+
+        if (webSocketClient == null || !webSocketClient.isConnected()) {
+            log.error("WebSocket is not connected!");
+            ChatMessage errorMsg = new ChatMessage(
+                    UUID.randomUUID().toString(),
+                    currentUser.getUsername(),
+                    recipient,
+                    content,
+                    null,
+                    LocalDateTime.now(),
+                    true,
+                    ChatMessage.MessageStatus.FAILED
+            );
+            return errorMsg;
+        }
+
         ChatMessage message = new ChatMessage(
-            UUID.randomUUID().toString(),
-            currentUser.getUsername(),
-            recipient,
-            content,
-            null,
-            LocalDateTime.now(),
-            true,
-            ChatMessage.MessageStatus.SENDING
+                UUID.randomUUID().toString(),
+                currentUser.getUsername(),
+                recipient,
+                content,
+                null,
+                LocalDateTime.now(),
+                true,
+                ChatMessage.MessageStatus.SENDING
         );
 
         messageRepository.saveMessage(recipient, message);
 
-        if (webSocketClient != null && webSocketClient.isConnected()) {
-            boolean sent = webSocketClient.sendChatMessage(recipient, content);
-            message.setStatus(sent ? ChatMessage.MessageStatus.SENT : ChatMessage.MessageStatus.FAILED);
+        boolean sent = webSocketClient.sendChatMessage(recipient, content);
+        message.setStatus(sent ? ChatMessage.MessageStatus.SENT : ChatMessage.MessageStatus.FAILED);
+        log.info("Message sent: {}", sent);
 
-            if (networkListener != null && sent) {
-                networkListener.onMessageSent(message);
-            } else if (!sent && networkListener != null) {
-                networkListener.onError("Failed to send message");
-            }
-        } else {
-            message.setStatus(ChatMessage.MessageStatus.FAILED);
-            log.warn("Cannot send message: not connected to server");
+        if (networkListener != null && sent) {
+            networkListener.onMessageSent(message);
         }
 
         return message;

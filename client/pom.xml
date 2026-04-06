@@ -22,6 +22,12 @@
       <version>1.0.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.16.0</version>
+    </dependency>
+
     <!-- FlatLaf для темной темы -->
     <dependency>
       <groupId>com.formdev</groupId>
